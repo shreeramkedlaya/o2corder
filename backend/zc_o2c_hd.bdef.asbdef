@@ -1,0 +1,30 @@
+projection;
+strict ( 2 );
+use draft;
+use side effects;
+
+define behavior for ZC_O2C_HD alias OrderHeader
+{
+  use create;
+  use update;
+  use delete;
+
+  use action shipOrder;
+  use action cancelOrder;
+
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+
+  use association _Items { create; with draft; }
+}
+
+define behavior for ZC_O2C_IT alias OrderItem
+{
+  use update;
+  use delete;
+
+  use association _Header { with draft; }
+}

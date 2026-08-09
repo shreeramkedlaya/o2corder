@@ -1,0 +1,79 @@
+managed implementation in class zbp_i_o2c_hd unique;
+strict ( 2 );
+with draft;
+
+define behavior for ZI_O2C_HD alias OrderHeader
+early numbering
+persistent table ztab_o2c_hd
+draft table zdr_o2c_hd
+lock master total etag last_changed_at
+authorization master ( global )
+{
+  create; update; delete;
+  association _Items { create; with draft; }
+
+  field ( readonly ) order_id, overall_status, overall_status_text, total_amount, created_by;
+  field ( mandatory ) customer_id;
+
+  action ( features : instance ) shipOrder result [1] $self;
+  action ( features : instance ) cancelOrder result [1] $self;
+  validation validateCustomer on save { field customer_id; create; update; }
+  determination setInitialStatus on modify { create; }
+
+  side effects {
+    entity _Items affects field total_amount, field currency_code;
+  }
+
+  // --- FIELD MAPPING ---
+  mapping for ztab_o2c_hd
+  {
+    order_id      = order_id;
+    customer_id     = customer_id;
+    overall_status  = overall_status;
+    overall_status_text = overall_status_text;
+    overall_status_criticality = overall_status_criticality;
+    total_amount    = total_amount;
+    currency_code   = currency_code;
+    created_by      = created_by;
+    last_changed_at = last_changed_at;
+  }
+
+  // --- DRAFT ACTIONS ---
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation validateCustomer;
+  }
+}
+
+define behavior for ZI_O2C_IT alias OrderItem
+early numbering
+persistent table ztab_o2c_it
+draft table zdr_o2c_it
+lock dependent by _Header
+authorization dependent by _Header
+{
+  update; delete;
+  association _Header { with draft; }
+
+  field ( readonly ) order_id;
+  field ( readonly ) item_amount,currency_code;
+  field ( readonly : update ) item_position;
+    determination calculateItemTotal on modify { field material_id, quantity; delete; }
+  side effects {
+    field quantity    affects field item_amount, field currency_code, entity _Header;
+    field material_id affects field item_amount, field currency_code, entity _Header;
+  }
+  mapping for ztab_o2c_it {
+    order_id    = order_id;
+    item_position = item_position;
+    material_id   = material_id;
+    quantity      = quantity;
+    unit_of_measure = unit_of_measure;
+    item_amount   = item_amount;
+    currency_code = currency_code;
+  }
+}

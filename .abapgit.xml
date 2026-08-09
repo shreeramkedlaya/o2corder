@@ -1,22 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
-  <asx:values>
-    <DATA>
-      <MASTER_LANGUAGE>E</MASTER_LANGUAGE>
-      <STARTING_FOLDER>/backend/</STARTING_FOLDER>
-      <FOLDER_LOGIC>PREFIX</FOLDER_LOGIC>
-      <IGNORE>
-        <item>.gitignore</item>
-        <item>.eslintignore</item>
-        <item>/frontend/</item>
-        <item>/.appGenInfo.json</item>
-        <item>/package.json</item>
-        <item>/package-lock.json</item>
-        <item>/ui5.yaml</item>
-        <item>/ui5-local.yaml</item>
-        <item>/ui5-mock.yaml</item>
-        <item>/README.md</item>
-      </IGNORE>
-    </DATA>
-  </asx:values>
+ <asx:values>
+  <DATA>
+   <MASTER_LANGUAGE>E</MASTER_LANGUAGE>
+   <STARTING_FOLDER>/backend/</STARTING_FOLDER>
+   <FOLDER_LOGIC>PREFIX</FOLDER_LOGIC>
+   <IGNORE>
+    <item>.gitignore</item>
+    <item>.eslintignore</item>
+    <item>/frontend/</item>
+    <item>/.appGenInfo.json</item>
+    <item>/package.json</item>
+    <item>/package-lock.json</item>
+    <item>/ui5.yaml</item>
+    <item>/ui5-local.yaml</item>
+    <item>/ui5-mock.yaml</item>
+    <item>/README.md</item>
+   </IGNORE>
+  </DATA>
+ </asx:values>
 </asx:abap>

@@ -1,0 +1,5 @@
+@EndUserText.label: 'O2C Sales Order Service Definition'
+define service ZUI_O2C_SO_V4 {
+  expose ZC_O2C_IT as OrderItem;
+  expose ZC_O2C_HD as OrderHeader;
+}
