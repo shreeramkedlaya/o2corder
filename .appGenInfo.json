@@ -1,0 +1,32 @@
+{
+  "generationParameters": {
+    "generationDate": "Thu Aug 06 2026 11:47:17 GMT+0530 (India Standard Time)",
+    "generatorPlatform": "Visual Studio Code",
+    "serviceType": "SAP System (ABAP Cloud)",
+    "metadataFilename": "",
+    "serviceUrl": "https://a396c05d-a792-494b-a9f2-5b3f674def78.abap.ap21.hana.ondemand.com/sap/opu/odata4/sap/zui_o2c_so_v4/srvd/sap/zui_o2c_so_v4/0001/",
+    "appName": "o2corder",
+    "appTitle": "O2C Sales Order Management",
+    "appDescription": "O2C Sales Order Management Application",
+    "appNamespace": "com.portfolio",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.145.3",
+    "enableEslint": true,
+    "enableTypeScript": false,
+    "showMockDataInfo": true,
+    "generatorVersion": "1.30.0",
+    "template": "List Report Page V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [
+      {
+        "type": "Main Entity",
+        "value": "OrderHeader"
+      },
+      {
+        "type": "Navigation Entity",
+        "value": "None"
+      }
+    ],
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+  }
+}
