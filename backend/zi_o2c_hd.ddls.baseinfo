@@ -3,6 +3,7 @@
 {
 "FROM":
 [
+"ZTAB_O2C_CUST",
 "ZTAB_O2C_HD"
 ],
 "ASSOCIATED":

@@ -56,6 +56,13 @@ define root view entity ZC_O2C_HD
           targetQualifier: 'StatusDP',
           position: 20
         },
+        {
+          id: 'HeaderCredit',
+          purpose: #HEADER,
+          type: #DATAPOINT_REFERENCE,
+          targetQualifier: 'CreditCheckDP',
+          position: 30
+        },
 
         // --- MAIN TAB 1: General Information ---
         {
@@ -80,6 +87,15 @@ define root view entity ZC_O2C_HD
             position: 20,
             targetQualifier: 'GQ2'
           },
+          {
+          id: 'CreditInfo',
+          type: #FIELDGROUP_REFERENCE,
+          parentId: 'HeaderData',
+          label: 'Credit & Payment',
+          position: 30,
+          targetQualifier: 'GQ_CREDIT'
+        },
+
 
         // --- MAIN TAB 2: Order Items Table ---
         {
@@ -109,7 +125,10 @@ define root view entity ZC_O2C_HD
 
       customer_id,
 
-
+      @EndUserText.label: 'Customer Name'
+      @UI.lineItem: [{ position: 25 }]
+      @UI.fieldGroup: [{ position: 25, qualifier: 'GQ1' }]
+      customer_name,
 
       @Consumption.valueHelpDefinition: [{
       entity: { name: 'ZI_O2C_STATUS_VH', element: 'Status' }
@@ -147,6 +166,38 @@ define root view entity ZC_O2C_HD
       /* @EndUserText.label: 'Currency'
       @UI.fieldGroup: [{ position: 20, qualifier: 'GQ2' }]
       currency_code, */
+
+
+
+      @EndUserText.label: 'Order Date'
+      @UI.fieldGroup: [{ position: 35, qualifier: 'GQ1' }]
+      @UI.lineItem: [{ position: 35 }]
+      order_date,
+
+      @EndUserText.label: 'Req. Delivery Date'
+      @UI.fieldGroup: [{ position: 40, qualifier: 'GQ1' }]
+      requested_delivery_date,
+
+      @EndUserText.label: 'Payment Terms'
+      @UI.fieldGroup: [{ position: 50, qualifier: 'GQ1' }]
+      payment_terms,
+
+      @EndUserText.label: 'Credit Status'
+      @UI.lineItem: [{ position: 35, criticality: 'credit_check_criticality' }]
+      @UI.fieldGroup: [{ position: 10, qualifier: 'GQ_CREDIT' }]
+      @UI.identification: [
+        { type: #FOR_ACTION, dataAction: 'releaseCredit', label: 'Release Credit Block', requiresContext: true }
+      ]
+      @UI.dataPoint: { qualifier: 'CreditCheckDP', title: 'Credit Status', criticality: 'credit_check_criticality' }
+      @ObjectModel.text.element: ['credit_check_status_text']
+      credit_check_status,
+
+      @UI.hidden: true
+      credit_check_status_text,
+
+      @UI.hidden: true
+      credit_check_criticality,
+
 
       // --- ADMINISTRATIVE FIELDS ---
       @UI.hidden: true

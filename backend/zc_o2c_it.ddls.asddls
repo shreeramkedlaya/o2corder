@@ -50,7 +50,6 @@ define view entity ZC_O2C_IT
       quantity,
 
       @EndUserText.label: 'Unit of Measure'
-      @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_O2C_UOM_VH', element: 'Unit' } }]
       unit_of_measure,
 
       @EndUserText.label: 'Item Amount'

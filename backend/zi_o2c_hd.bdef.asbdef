@@ -63,6 +63,7 @@ authorization dependent by _Header
   field ( readonly ) item_amount,currency_code;
   field ( readonly : update ) item_position;
     determination calculateItemTotal on modify { field material_id, quantity; delete; }
+    determination setInitialItemValues on modify { create; }
   side effects {
     field quantity    affects field item_amount, field currency_code, entity _Header;
     field material_id affects field item_amount, field currency_code, entity _Header;

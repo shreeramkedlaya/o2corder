@@ -159,9 +159,9 @@ CLASS lhc_OrderHeader IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD earlynumbering_create.
-    DATA: lv_max_id TYPE n LENGTH 4.
+    DATA: lv_max_id TYPE n LENGTH 5. " <-- Changed to 5 digits (e.g. 00081)
 
-    " 1. Find the highest Order ID across BOTH Active AND Draft tables!
+    " 1. Find the highest Order ID across BOTH Active AND Draft tables
     SELECT MAX( order_id ) FROM ztab_o2c_hd INTO @DATA(lv_max_active).
     SELECT MAX( order_id ) FROM zdr_o2c_hd  INTO @DATA(lv_max_draft).
 
@@ -169,10 +169,10 @@ CLASS lhc_OrderHeader IMPLEMENTATION.
                                           THEN lv_max_active
                                           ELSE lv_max_draft ).
 
-    " Extract just the numbers safely
-    IF lv_highest_order IS NOT INITIAL AND strlen( lv_highest_order ) >= 4.
+    " Extract just the numbers safely (skip the first 2 characters 'OR')
+    IF lv_highest_order IS NOT INITIAL AND strlen( lv_highest_order ) >= 2.
       TRY.
-          lv_max_id = substring( val = lv_highest_order off = 4 ).
+          lv_max_id = substring( val = lv_highest_order off = 2 ). " <-- Offset is now 2
         CATCH cx_root.
           lv_max_id = 0.
       ENDTRY.
@@ -186,7 +186,7 @@ CLASS lhc_OrderHeader IMPLEMENTATION.
         lv_max_id += 1.
         APPEND VALUE #( %cid      = ls_entity-%cid
                         %is_draft = ls_entity-%is_draft
-                        order_id  = |ORD-{ lv_max_id }| ) TO mapped-orderheader.
+                        order_id  = |OR{ lv_max_id }| ) TO mapped-orderheader. " <-- Format is now OR + 5 digits
       ELSE.
         APPEND VALUE #( %cid      = ls_entity-%cid
                         %is_draft = ls_entity-%is_draft
@@ -194,6 +194,7 @@ CLASS lhc_OrderHeader IMPLEMENTATION.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.
+
 
   METHOD setInitialStatus.
     MODIFY ENTITIES OF zi_o2c_hd IN LOCAL MODE
@@ -249,6 +250,9 @@ CLASS lhc_OrderItem DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
     METHODS calculateItemTotal FOR DETERMINE ON MODIFY
       IMPORTING keys FOR OrderItem~calculateItemTotal.
+
+    METHODS setInitialItemValues FOR DETERMINE ON MODIFY
+      IMPORTING keys FOR OrderItem~setInitialItemValues.
 ENDCLASS.
 
 CLASS lhc_OrderItem IMPLEMENTATION.
@@ -263,17 +267,34 @@ CLASS lhc_OrderItem IMPLEMENTATION.
     ENDIF.
 
     " 1. UPDATE BOTH AMOUNT AND CURRENCY CODE
-    MODIFY ENTITIES OF zi_o2c_hd IN LOCAL MODE
-      ENTITY OrderItem
-        UPDATE FIELDS ( item_amount currency_code )
-        WITH VALUE #( FOR item IN lt_changed_items (
-                        %tky          = item-%tky
-                        item_amount   = item-quantity * COND #( WHEN item-material_id = 'MAT-100' THEN 150
-                                                                WHEN item-material_id = 'MAT-200' THEN 300
-                                                                WHEN item-material_id = 'MAT-300' THEN 450
-                                                                ELSE 50 )
-                        currency_code = 'USD' " <-- REQUIRED FOR FIORI TO DISPLAY IT!
-                      ) ).
+    LOOP AT lt_changed_items INTO DATA(ls_changed_item).
+
+      " Fetch price from the new Material Master table
+      SELECT SINGLE unit_price, currency
+        FROM ztab_o2c_mat
+        WHERE material_id = @ls_changed_item-material_id
+        INTO @DATA(ls_mat).
+
+      " EXPLICITLY declare types to avoid the P(8,0) inline declaration error
+      DATA lv_new_amount TYPE ztab_o2c_it-item_amount.
+      DATA lv_new_curr   TYPE ztab_o2c_it-currency_code.
+
+
+      IF sy-subrc = 0.
+        lv_new_amount = ls_changed_item-quantity * ls_mat-unit_price.
+        lv_new_curr   = ls_mat-currency.
+      ELSE.
+        lv_new_amount = 0.
+        lv_new_curr   = 'USD'. " Fallback currency if material not found
+      ENDIF.
+
+      MODIFY ENTITIES OF zi_o2c_hd IN LOCAL MODE
+        ENTITY OrderItem
+          UPDATE FIELDS ( item_amount currency_code )
+          WITH VALUE #( ( %tky          = ls_changed_item-%tky
+                          item_amount   = lv_new_amount
+                          currency_code = lv_new_curr ) ).
+    ENDLOOP.
 
     DATA lt_header_keys TYPE TABLE FOR READ IMPORT zi_o2c_hd.
     lt_header_keys = VALUE #( FOR GROUPS header_grp OF item IN lt_changed_items
@@ -304,5 +325,17 @@ CLASS lhc_OrderItem IMPLEMENTATION.
       reported-orderheader = CORRESPONDING #( BASE ( reported-orderheader ) lt_reported_hd-orderheader ).
     ENDLOOP.
   ENDMETHOD.
+
+  METHOD setInitialItemValues.
+    " default the qty to 1 when new item is created
+    MODIFY ENTITIES OF zi_o2c_hd IN LOCAL MODE
+      ENTITY OrderItem
+        UPDATE FIELDS ( quantity )
+        WITH VALUE #( FOR key IN keys (
+                        %tky     = key-%tky
+                        quantity = 1
+                      ) ).
+  ENDMETHOD.
+
 ENDCLASS.
 
