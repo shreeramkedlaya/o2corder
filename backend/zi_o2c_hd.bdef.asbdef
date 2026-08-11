@@ -12,16 +12,27 @@ authorization master ( global )
   create; update; delete;
   association _Items { create; with draft; }
 
-  field ( readonly ) order_id, overall_status, overall_status_text, total_amount, created_by;
-  field ( mandatory ) customer_id;
+  field ( readonly ) order_id, overall_status, overall_status_text, total_amount, created_by,
+                     credit_check_status, credit_check_status_text, credit_check_criticality, customer_name;
+  field ( mandatory ) customer_id, order_date;
 
   action ( features : instance ) shipOrder result [1] $self;
   action ( features : instance ) cancelOrder result [1] $self;
+
+  // --- NEW ACTIONS & DETERMINATIONS ---
+  action ( features : instance ) releaseCredit result [1] $self;
+  action ( features : instance ) createDelivery result [1] $self;
+  determination setPaymentTerms on modify { create; field customer_id; }
+  determination checkCreditLimit on save { create; update; }
+
   validation validateCustomer on save { field customer_id; create; update; }
   determination setInitialStatus on modify { create; }
 
   side effects {
     entity _Items affects field total_amount, field currency_code;
+
+    // refresh fields
+    field customer_id affects field payment_terms, field customer_name, field order_date;
   }
 
   // --- FIELD MAPPING ---
@@ -36,6 +47,15 @@ authorization master ( global )
     currency_code   = currency_code;
     created_by      = created_by;
     last_changed_at = last_changed_at;
+
+    order_date = order_date;
+    requested_delivery_date = requested_delivery_date;
+    payment_terms = payment_terms;
+    credit_check_status = credit_check_status;
+    // NEW MAPPINGS TO CLEAR THE WARNINGS
+    customer_name = customer_name;
+    credit_check_status_text = credit_check_status_text;
+    credit_check_criticality = credit_check_criticality;
   }
 
   // --- DRAFT ACTIONS ---
@@ -46,6 +66,7 @@ authorization master ( global )
   draft determine action Prepare
   {
     validation validateCustomer;
+    determination checkCreditLimit;
   }
 }
 

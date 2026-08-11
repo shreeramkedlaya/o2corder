@@ -36,6 +36,9 @@
 define root view entity ZC_O2C_HD
   provider contract transactional_query
   as projection on ZI_O2C_HD
+  association [0..*] to ZC_O2C_DEL_HD as _Delivery on $projection.order_id = _Delivery.order_id
+  association [0..*] to ZC_O2C_INV_HD as _Invoice  on $projection.order_id = _Invoice.order_id
+
 {
 
 
@@ -104,7 +107,24 @@ define root view entity ZC_O2C_HD
           label: 'Order Items',
           position: 20,
           targetElement: '_Items'
+        },
+        {
+          id:              'Delivery',
+          purpose:         #STANDARD,
+          type:            #LINEITEM_REFERENCE,
+          label:           'Deliveries',
+          position:        30,
+          targetElement:   '_Delivery'
+        },
+        {
+          id:              'Invoice',
+          purpose:         #STANDARD,
+          type:            #LINEITEM_REFERENCE,
+          label:           'Invoices',
+          position:        40,
+          targetElement:   '_Invoice'
         }
+
       ]
 
       // --- GENERAL INFORMATION FIELDS ---
@@ -167,8 +187,6 @@ define root view entity ZC_O2C_HD
       @UI.fieldGroup: [{ position: 20, qualifier: 'GQ2' }]
       currency_code, */
 
-
-
       @EndUserText.label: 'Order Date'
       @UI.fieldGroup: [{ position: 35, qualifier: 'GQ1' }]
       @UI.lineItem: [{ position: 35 }]
@@ -198,7 +216,6 @@ define root view entity ZC_O2C_HD
       @UI.hidden: true
       credit_check_criticality,
 
-
       // --- ADMINISTRATIVE FIELDS ---
       @UI.hidden: true
       created_by,
@@ -207,5 +224,7 @@ define root view entity ZC_O2C_HD
       last_changed_at,
 
       // --- COMPOSITION CHILD LINK ---
-      _Items : redirected to composition child ZC_O2C_IT
+      _Items : redirected to composition child ZC_O2C_IT,
+      _Delivery,
+      _Invoice
 }

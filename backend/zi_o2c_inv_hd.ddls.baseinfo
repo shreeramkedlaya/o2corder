@@ -3,14 +3,13 @@
 {
 "FROM":
 [
-"ZTAB_O2C_CUST",
-"ZTAB_O2C_HD"
+"ZTAB_O2C_INV_HD"
 ],
 "ASSOCIATED":
 [
 "ZI_O2C_DEL_HD",
-"ZI_O2C_INV_HD",
-"ZI_O2C_IT"
+"ZI_O2C_HD",
+"ZI_O2C_PAY"
 ],
 "BASE":
 [],

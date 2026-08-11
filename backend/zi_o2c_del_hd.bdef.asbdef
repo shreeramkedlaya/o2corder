@@ -1,0 +1,74 @@
+managed implementation in class zbp_i_o2c_del_hd unique;
+strict ( 2 );
+with draft;
+define behavior for ZI_O2C_DEL_HD alias DeliveryHeader
+with additional save
+early numbering
+persistent table ztab_o2c_del_hd
+draft table zdr_o2c_del_hd
+lock master total etag last_changed_at
+authorization master ( global )
+
+{
+
+  create;
+  update;
+  delete;
+  association _DeliveryItems { create; with draft; }
+
+  field ( readonly ) delivery_id;
+  field ( readonly ) created_by, last_changed_at, delivery_status_text, delivery_status_criticality;
+
+  // Custom action to actually ship the goods
+  action ( features : instance ) postGoodsIssue result [1] $self;
+  action ( features : instance ) createInvoice result [1] $self;
+  mapping for ztab_o2c_del_hd
+  {
+    delivery_id      = delivery_id;
+    order_id         = order_id;
+    customer_id      = customer_id;
+    delivery_date    = delivery_date;
+    carrier          = carrier;
+    tracking_number  = tracking_number;
+    delivery_status  = delivery_status;
+    goods_issue_date = goods_issue_date;
+    currency_code    = currency_code;
+    created_by       = created_by;
+    last_changed_at  = last_changed_at;
+        delivery_status_text        = delivery_status_text;
+    delivery_status_criticality = delivery_status_criticality;
+
+
+  }
+
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+}
+
+define behavior for ZI_O2C_DEL_IT alias DeliveryItem
+early numbering
+persistent table ztab_o2c_del_it
+draft table zdr_o2c_del_it
+lock dependent by _DeliveryHeader
+authorization dependent by _DeliveryHeader
+{
+  update;
+  delete;
+  association _DeliveryHeader { with draft; }
+
+  field ( readonly ) delivery_id, delivery_item;
+
+  mapping for ztab_o2c_del_it
+  {
+    delivery_id         = delivery_id;
+    delivery_item       = delivery_item;
+    order_item_position = order_item_position;
+    material_id         = material_id;
+    quantity_ordered    = quantity_ordered;
+    quantity_delivered  = quantity_delivered;
+    unit_of_measure     = unit_of_measure;
+  }
+}

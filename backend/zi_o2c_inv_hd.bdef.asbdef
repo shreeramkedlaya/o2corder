@@ -1,0 +1,58 @@
+managed implementation in class zbp_i_o2c_inv_hd unique;
+strict ( 2 );
+with draft;
+
+define behavior for ZI_O2C_INV_HD alias InvoiceHeader
+early numbering
+persistent table ztab_o2c_inv_hd
+draft table zdr_o2c_inv_hd
+lock master total etag last_changed_at
+authorization master ( global )
+with additional save
+{
+    // Expose create to other BOs (but our ZC_ consumption layer still blocks the UI!)
+  create;
+  update;
+  delete;
+
+  // Truly readonly at all times
+  field ( readonly ) invoice_id,
+                     ar_status_text, ar_status_criticality,
+                     created_by;
+
+  // Allowed during CREATE, but locked during UPDATE
+  field ( readonly : update ) order_id, delivery_id, customer_id,
+                              gross_amount, outstanding_amount, ar_status,
+                              paid_amount, invoice_date, due_date,
+                              currency_code, payment_terms;
+
+
+  action ( features : instance ) postPayment parameter ZINV_PAYMENT_INPUT result [1] $self;
+
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+
+  // Required by strict(2) mode for drafts
+  draft determine action Prepare;
+
+  mapping for ztab_o2c_inv_hd {
+    invoice_id            = invoice_id;
+    order_id              = order_id;
+    delivery_id           = delivery_id;
+    customer_id           = customer_id;
+    invoice_date          = invoice_date;
+    due_date              = due_date;
+    gross_amount          = gross_amount;
+    paid_amount           = paid_amount;
+    outstanding_amount    = outstanding_amount;
+    currency_code         = currency_code;
+    ar_status             = ar_status;
+    ar_status_text        = ar_status_text;
+    ar_status_criticality = ar_status_criticality;
+    payment_terms         = payment_terms;
+    created_by            = created_by;
+    last_changed_at       = last_changed_at;
+  }
+}

@@ -11,6 +11,8 @@ define behavior for ZC_O2C_HD alias OrderHeader
 
   use action shipOrder;
   use action cancelOrder;
+  use action createDelivery;
+
 
   use action Edit;
   use action Activate;
@@ -25,6 +27,5 @@ define behavior for ZC_O2C_IT alias OrderItem
 {
   use update;
   use delete;
-
   use association _Header { with draft; }
 }

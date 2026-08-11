@@ -25,6 +25,19 @@ CLASS lhc_OrderHeader DEFINITION INHERITING FROM cl_abap_behavior_handler.
     METHODS earlynumbering_cba_Items FOR NUMBERING
       IMPORTING entities FOR CREATE OrderHeader\_Items.
 
+    METHODS setPaymentTerms FOR DETERMINE ON MODIFY
+      IMPORTING keys FOR OrderHeader~setPaymentTerms.
+
+    METHODS checkCreditLimit FOR DETERMINE ON SAVE
+      IMPORTING keys FOR OrderHeader~checkCreditLimit.
+
+    METHODS releaseCredit FOR MODIFY
+      IMPORTING keys FOR ACTION OrderHeader~releaseCredit RESULT result.
+
+    " Note: we defined createDelivery in the BDEF, but we will write the ABAP for it in Phase 3.
+    " If you want to temporarily stop the createDelivery warning too, just define it here:
+    METHODS createDelivery FOR MODIFY
+      IMPORTING keys FOR ACTION OrderHeader~createDelivery RESULT result.
 
 ENDCLASS.
 
@@ -51,6 +64,14 @@ CLASS lhc_OrderHeader IMPLEMENTATION.
                         %action-cancelOrder = COND #( WHEN ls_order-overall_status = 'C' OR ls_order-overall_status = 'S'
                                                       THEN if_abap_behv=>fc-o-disabled
                                                       ELSE if_abap_behv=>fc-o-enabled )
+                        %action-releaseCredit = COND #(
+                                                      WHEN ls_order-credit_check_status = 'F' " Only clickable if Failed/Blocked
+                                                      THEN if_abap_behv=>fc-o-enabled
+                                                      ELSE if_abap_behv=>fc-o-disabled )
+                        %action-createDelivery = COND #( WHEN ls_order-overall_status = 'O'
+                                                      THEN if_abap_behv=>fc-o-enabled
+                                                      ELSE if_abap_behv=>fc-o-disabled )
+
                       ) ).
   ENDMETHOD.
 
@@ -239,7 +260,142 @@ CLASS lhc_OrderHeader IMPLEMENTATION.
   ENDMETHOD.
 
 
+  " -------------------------------------------------------------
+  " DETERMINE: Set Payment Terms & Order Date on Creation
+  " -------------------------------------------------------------
+  METHOD setPaymentTerms.
+    READ ENTITIES OF zi_o2c_hd IN LOCAL MODE
+      ENTITY OrderHeader FIELDS ( customer_id ) WITH CORRESPONDING #( keys )
+      RESULT DATA(lt_orders).
 
+    LOOP AT lt_orders INTO DATA(ls_order).
+      SELECT SINGLE payment_terms FROM ztab_o2c_cust
+        WHERE customer_id = @ls_order-customer_id
+        INTO @DATA(lv_terms).
+
+      MODIFY ENTITIES OF zi_o2c_hd IN LOCAL MODE
+        ENTITY OrderHeader
+          UPDATE FIELDS ( payment_terms order_date )
+          WITH VALUE #( ( %tky          = ls_order-%tky
+                          payment_terms = lv_terms
+                          order_date    = cl_abap_context_info=>get_system_date( ) ) ).
+    ENDLOOP.
+  ENDMETHOD.
+
+  " -------------------------------------------------------------
+  " VALIDATE: Check Credit Limit (Blocks if exceeded)
+  " -------------------------------------------------------------
+  METHOD checkCreditLimit.
+    READ ENTITIES OF zi_o2c_hd IN LOCAL MODE
+      ENTITY OrderHeader FIELDS ( customer_id total_amount ) WITH CORRESPONDING #( keys )
+      RESULT DATA(lt_orders).
+
+    LOOP AT lt_orders INTO DATA(ls_order).
+      SELECT SINGLE credit_limit, credit_exposure FROM ztab_o2c_cust
+        WHERE customer_id = @ls_order-customer_id
+        INTO @DATA(ls_cust).
+
+      DATA lv_available TYPE ztab_o2c_cust-credit_limit.
+      lv_available = ls_cust-credit_limit - ls_cust-credit_exposure.
+
+      IF ls_order-total_amount > lv_available.
+        MODIFY ENTITIES OF zi_o2c_hd IN LOCAL MODE
+          ENTITY OrderHeader UPDATE FIELDS ( credit_check_status )
+          WITH VALUE #( ( %tky = ls_order-%tky  credit_check_status = 'F' ) ).
+
+        APPEND VALUE #(
+            %tky = ls_order-%tky
+            %msg = new_message_with_text(
+              severity = if_abap_behv_message=>severity-warning
+              text = |Warning: Order { ls_order-order_id } exceeds credit limit. Order Blocked!|
+            )
+        ) TO reported-orderheader.
+      ELSE.
+        MODIFY ENTITIES OF zi_o2c_hd IN LOCAL MODE
+          ENTITY OrderHeader UPDATE FIELDS ( credit_check_status )
+          WITH VALUE #( ( %tky = ls_order-%tky  credit_check_status = 'P' ) ).
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+  " -------------------------------------------------------------
+  " ACTION: Manually Release a Credit Block
+  " -------------------------------------------------------------
+  METHOD releaseCredit.
+    MODIFY ENTITIES OF zi_o2c_hd IN LOCAL MODE
+      ENTITY OrderHeader UPDATE FIELDS ( credit_check_status )
+      WITH VALUE #( FOR key IN keys ( %tky = key-%tky  credit_check_status = 'R' ) )
+      FAILED failed  REPORTED reported.
+
+    READ ENTITIES OF zi_o2c_hd IN LOCAL MODE
+      ENTITY OrderHeader ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(lt_orders).
+
+    result = VALUE #( FOR ls IN lt_orders ( %tky = ls-%tky  %param = ls ) ).
+
+    LOOP AT lt_orders INTO DATA(ls_msg).
+      APPEND VALUE #(
+          %tky = ls_msg-%tky
+          %msg = new_message_with_text(
+            severity = if_abap_behv_message=>severity-success
+            text = |Credit block manually released for Order { ls_msg-order_id }.|
+          )
+      ) TO reported-orderheader.
+    ENDLOOP.
+  ENDMETHOD.
+
+  " -------------------------------------------------------------
+  " Placeholder for Phase 3
+  " -------------------------------------------------------------
+  METHOD createDelivery.
+    READ ENTITIES OF zi_o2c_hd IN LOCAL MODE
+      ENTITY OrderHeader ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(lt_orders).
+
+    LOOP AT lt_orders INTO DATA(ls_order).
+      IF ls_order-overall_status <> 'O' OR ls_order-credit_check_status = 'F'.
+        CONTINUE.
+      ENDIF.
+
+      " Create the Delivery Header via inter-entity EML
+      " The delivery_id is auto-generated by the Delivery BO's earlynumbering_create method!
+      MODIFY ENTITIES OF zi_o2c_del_hd
+        ENTITY DeliveryHeader
+          CREATE FIELDS ( order_id customer_id delivery_date delivery_status )
+          WITH VALUE #( ( %cid            = |cid_{ ls_order-order_id }|
+                          order_id        = ls_order-order_id
+                          customer_id     = ls_order-customer_id
+                          delivery_date   = cl_abap_context_info=>get_system_date( )
+                          delivery_status = 'P' ) )
+        MAPPED DATA(mapped_del)  FAILED DATA(failed_del)  REPORTED DATA(reported_del).
+
+      " Advance Sales Order status to 'F' (In Fulfilment)
+      MODIFY ENTITIES OF zi_o2c_hd IN LOCAL MODE
+        ENTITY OrderHeader UPDATE FIELDS ( overall_status )
+        WITH VALUE #( ( %tky = ls_order-%tky  overall_status = 'F' ) ).
+
+      " Extract the newly generated ID from the mapped table
+      DATA lv_new_del_id TYPE ztab_o2c_del_hd-delivery_id.
+      IF line_exists( mapped_del-deliveryheader[ 1 ] ).
+        lv_new_del_id = mapped_del-deliveryheader[ 1 ]-delivery_id.
+      ENDIF.
+
+      " Trigger Success Message
+      APPEND VALUE #(
+          %tky = ls_order-%tky
+          %msg = new_message_with_text(
+            severity = if_abap_behv_message=>severity-success
+            text = |Delivery { lv_new_del_id } created! Status: In Fulfilment.|
+          )
+      ) TO reported-orderheader.
+    ENDLOOP.
+
+    READ ENTITIES OF zi_o2c_hd IN LOCAL MODE
+      ENTITY OrderHeader ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(lt_updated).
+
+    result = VALUE #( FOR ls IN lt_updated ( %tky = ls-%tky  %param = ls ) ).
+  ENDMETHOD.
 ENDCLASS.
 
 

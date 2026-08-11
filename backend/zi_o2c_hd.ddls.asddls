@@ -5,8 +5,9 @@ define root view entity ZI_O2C_HD
 
   -- new: join cust master to get the name
     left outer join ztab_o2c_cust as cust on hd.customer_id = cust.customer_id
-
-  composition [0..*] of ZI_O2C_IT as _Items
+  association [0..*] to ZI_O2C_DEL_HD as _Delivery on $projection.order_id = _Delivery.order_id
+  association [0..*] to ZI_O2C_INV_HD as _Invoice  on $projection.order_id = _Invoice.order_id
+  composition [0..*] of ZI_O2C_IT     as _Items
 {
   key hd.order_id,
       hd.customer_id,
@@ -62,5 +63,7 @@ define root view entity ZI_O2C_HD
       hd.created_by,
       hd.last_changed_at,
 
-      _Items
+      _Items,
+      _Delivery,
+      _Invoice
 }
