@@ -1,0 +1,91 @@
+---
+id: 60c832bb-546f-493c-8236-07dda5397538
+---
+flowchart TD
+
+%% ─────────────────────────────
+%% STYLING
+%% ─────────────────────────────
+classDef completed fill:#d4edda,stroke:#28a745,stroke-width:2px,color:#155724;
+classDef pending fill:#f8f9fa,stroke:#6c757d,stroke-width:2px,stroke-dasharray: 5 5,color:#495057;
+
+%% ─────────────────────────────
+%% MASTER DATA LAYER (Phase 1)
+%% ─────────────────────────────
+subgraph L1[Master Data Foundation]
+    MD1[Create ZTAB_O2C_CUST & ZTAB_O2C_MAT]:::completed
+    MD2[Seed Initial Data via ZCL_SEED_O2C_MASTER]:::completed
+    MD3[Expose ZI_O2C_CUSTOMER & ZI_O2C_MATERIAL]:::completed
+    MD4[Bind Value Helps to Fiori UI]:::completed
+    
+    MD1 --> MD2 --> MD3 --> MD4
+end
+
+%% ─────────────────────────────
+%% ORDER MANAGEMENT LAYER (Phases 1 & 2)
+%% ─────────────────────────────
+subgraph L2[Order Management & Credit Check]
+    OM1[User clicks 'Create Order' in Fiori]:::completed
+    OM2[Select Customer & Append Materials]:::completed
+    OM3[calculateItemTotal Determination]:::completed
+    OM4[Fetch unit_price from ZTAB_O2C_MAT]:::completed
+    OM5[validateCustomer on Save]:::completed
+    OM6{Order Total > Available Credit?}:::completed
+    OM7[Trigger Credit Block Status: 'F']:::completed
+    OM8[Execute releaseCredit Action]:::completed
+    OM9[Save Sales Order to ZTAB_O2C_HD]:::completed
+    OM10[Set overall_status: 'O' Open]:::completed
+
+    MD4 --> OM1
+    OM1 --> OM2 --> OM3 --> OM4 --> OM5 --> OM6
+    OM6 -->|Yes| OM7 --> OM8 --> OM9
+    OM6 -->|No| OM9
+    OM9 --> OM10
+end
+
+%% ─────────────────────────────
+%% LOGISTICS LAYER (Phase 3)
+%% ─────────────────────────────
+subgraph L3[Logistics & Fulfillment]
+    LF1[User triggers createDelivery Action]:::completed
+    LF2[Validate Order Status is Open & Credit OK]:::completed
+    LF3[Generate ZTAB_O2C_DEL_HD Document]:::completed
+    LF4[Set overall_status: 'F' In Fulfilment]:::completed
+    LF5[User triggers postGoodsIssue Action]:::completed
+    LF6[Deduct stock_quantity in ZTAB_O2C_MAT]:::completed
+    LF7[Set delivery_status: 'G' Goods Issued]:::completed
+    LF8[Set overall_status: 'S' Shipped]:::completed
+
+    OM10 --> LF1
+    LF1 --> LF2 --> LF3 --> LF4 --> LF5 --> LF6 --> LF7 --> LF8
+end
+
+%% ─────────────────────────────
+%% INVOICING LAYER (Phase 4 - COMPLETED)
+%% ─────────────────────────────
+subgraph L4[Billing & Accounts Receivable]
+    INV1[User triggers createInvoice Action]:::completed
+    INV2[Validate Delivery Status is Goods Issued]:::completed
+    INV3[Calculate Due Date via Payment Terms]:::completed
+    INV4[Generate ZTAB_O2C_INV_HD Document]:::completed
+    INV5[Increase Customer credit_exposure]:::completed
+    INV6[Set ar_status: 'O' Open]:::completed
+    INV7[Set overall_status: 'I' Invoiced]:::completed
+
+    LF8 --> INV1
+    INV1 --> INV2 --> INV3 --> INV4 --> INV5 --> INV6 --> INV7
+end
+
+%% ─────────────────────────────
+%% PAYMENT LAYER (Phase 5 - COMPLETED)
+%% ─────────────────────────────
+subgraph L5[Payment & Reconciliation]
+    PAY1[User triggers postPayment Action]:::completed
+    PAY2[Insert record into ZTAB_O2C_PAY]:::completed
+    PAY3[Reduce Customer credit_exposure]:::completed
+    PAY4[Set ar_status: 'C' Cleared]:::completed
+    PAY5[Set overall_status: 'P' Paid / Closed]:::completed
+
+    INV7 --> PAY1
+    PAY1 --> PAY2 --> PAY3 --> PAY4 --> PAY5
+end
