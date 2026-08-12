@@ -1,6 +1,6 @@
 # SAP BTP Order-to-Cash (O2C) Full-Stack Application
 
-**🌐 Live Application URL:** [https://d362bfeftrial-dev-o2c-approuter.cfapps.ap21.hana.ondemand.com](https://d362bfeftrial-dev-o2c-approuter.cfapps.ap21.hana.ondemand.com)
+**🌐 Live Application URL:** [https://a396c05d-a792-494b-a9f2-5b3f674def78.abap-web.ap21.hana.ondemand.com/sap/bc/ui5_ui5/sap/zo2c_ui](https://a396c05d-a792-494b-a9f2-5b3f674def78.abap-web.ap21.hana.ondemand.com/sap/bc/ui5_ui5/sap/zo2c_ui)
 
 ## Overview
 - **Goal**: Deliver a comprehensive, end-to-end Order-to-Cash (O2C) lifecycle application managing Sales Orders, Logistics, and Financials.
