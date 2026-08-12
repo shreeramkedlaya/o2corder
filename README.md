@@ -1,5 +1,11 @@
 # O2C Sales Order Management (Fiori Elements V4)
 
+![ABAP](https://img.shields.io/badge/ABAP-RAP%20Strict%20Mode-0070F3?style=for-the-badge&logo=sap&logoColor=white)
+![Fiori](https://img.shields.io/badge/SAP-Fiori%20Elements%20V4-009BAA?style=for-the-badge&logo=sap&logoColor=white)
+![OData](https://img.shields.io/badge/OData-V4-orange?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Complete%20✓-brightgreen?style=for-the-badge)
+![Phases](https://img.shields.io/badge/Phases-7%20of%207-blueviolet?style=for-the-badge)
+
 A modern SAP Fiori Elements application for Order-to-Cash (O2C) Sales Order Management, built using OData V4 and the ABAP RESTful Application Programming (RAP) model.
 
 ## ✨ Features
