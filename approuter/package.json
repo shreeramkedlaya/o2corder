@@ -1,0 +1,11 @@
+{
+  "name": "o2c-approuter",
+  "version": "1.0.0",
+  "description": "Approuter for O2C Sales Order App",
+  "scripts": {
+    "start": "node node_modules/@sap/approuter/approuter.js"
+  },
+  "dependencies": {
+    "@sap/approuter": "^14"
+  }
+}

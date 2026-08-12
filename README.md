@@ -1,46 +1,71 @@
-# O2C Sales Order Management (Fiori Elements V4)
+# SAP BTP Order-to-Cash (O2C) Full-Stack Application
 
-![ABAP RAP](https://img.shields.io/badge/ABAP-RAP%20Strict%20Mode-0070F3?style=flat&logo=sap&logoColor=white)
-![Fiori Elements](https://img.shields.io/badge/SAP-Fiori%20Elements%20V4-009BAA?style=flat&logo=sap&logoColor=white)
-![OData V4](https://img.shields.io/badge/OData-V4-orange?style=flat)
-![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=flat)
-![Phases](https://img.shields.io/badge/Phases-7%20%2F%207-blueviolet?style=flat)
+**🌐 Live Application URL:** [https://d362bfeftrial-dev-o2c-approuter.cfapps.ap21.hana.ondemand.com](https://d362bfeftrial-dev-o2c-approuter.cfapps.ap21.hana.ondemand.com)
 
-**[✨ Features](#-features)** · **[🏗️ Architecture](#️-technical-architecture)** · **[📖 Implementation Docs](#-implementation-documentation)** · **[🚀 Getting Started](#-getting-started)** · **[🌐 Wiki](https://github.com/shreeramkedlaya/o2corder/wiki)**
+## Overview
+- **Goal**: Deliver a comprehensive, end-to-end Order-to-Cash (O2C) lifecycle application managing Sales Orders, Logistics, and Financials.
+- **Scope**: Includes creation of Sales Orders, Delivery and Goods Issue processing, Invoicing, and Payment Application.
+- **Value**: Demonstrates advanced SAP BTP capabilities, utilizing the ABAP RESTful Application Programming (RAP) Model, OData V4, and Fiori Elements.
+- **Status**: Complete.
 
-A modern SAP Fiori Elements application for Order-to-Cash (O2C) Sales Order Management, built using OData V4 and the ABAP RESTful Application Programming (RAP) model.
+## Prerequisites
+- **Environments**:
+  - SAP BTP ABAP Environment (Trial or Enterprise).
+  - SAP Business Application Studio (BAS) or VS Code with Fiori Tools.
+- **Credentials & Access**:
+  - Developer access to the target ABAP system (e.g., `ZLOCAL_SK` package).
+  - Configured Cloud Connector (if connecting to on-premise components).
+- **Required Tools**:
+  - Node.js and npm (for frontend dependencies).
+  - ABAP Development Tools (ADT) in Eclipse.
+- **Pre-existing Data**:
+  - Configured Master Data foundation (Customers, Materials) seeded in the database.
 
-## ✨ Features
-- **End-to-End O2C Flow:** Manage Sales Orders, Logistics (Deliveries), and Finance (Invoicing & Payments) in a single unified application.
-- **Draft Capabilities:** Edit, save, and resume Sales Orders seamlessly without losing data utilizing the RAP transactional draft buffer.
-- **Dynamic Price Orchestration:** Automatic calculation of item amounts and header grand totals via backend ABAP determinations.
-- **Early Numbering:** Automated generation of IDs (`ORD-`, `DEL-`, `INV-`) with robust duplicate-key avoidance across active and draft tables.
-- **Strict Mode Operations:** Direct database updates (like Credit Exposure adjustments and Stock reductions) safely deferred to the Saver Class (`save_modified`) phase.
-- **Cross-BO Navigation:** Seamlessly navigate between independent Business Objects via Fiori Object Page Facets.
+## Architecture/Components
+- **Backend Core**: 
+  - ABAP RESTful Application Programming Model (RAP) configured in Strict Mode (v2).
+  - Deep hierarchical entities mapped to transparent database tables.
+- **Transactional Behavior**: 
+  - Draft-enabled framework for robust session persistence and recovery.
+  - Early Numbering logic for consistent, gap-less ID generation.
+  - Unmanaged Save implementations for complex cross-entity lifecycle updates (e.g., adjusting credit exposure).
+- **Service Layer**: 
+  - OData V4 UI Service definitions and bindings.
+- **Frontend Layer**: 
+  - SAP Fiori Elements (V4) utilizing List Reports and Object Pages.
+  - Custom UI annotations governing Cross-BO navigation and dynamic Feature Control (action disabling).
 
-## 🏗️ Technical Architecture
-- **Frontend:** SAP Fiori Elements (OData V4)
-- **Backend:** ABAP RAP (RESTful Application Programming Model)
-- **Database:** SAP HANA / ABAP Environment
+## Step-by-Step Execution
+### Phase 1: Backend Foundation
+- Provision the ABAP environment and create the foundational `ZLOCAL_SK` package.
+- Define the persistent database tables (`ztab_o2c_hd`, `ztab_o2c_it`, `ztab_o2c_del_hd`, etc.).
+- Generate Core Data Services (CDS) base views, defining keys and primary associations.
 
-## 📖 Implementation Documentation
+### Phase 2: Transactional Behavior (RAP)
+- Generate the Behavior Definition (BDEF) enabling Draft and identifying Root entities.
+- Implement Determinations for automated calculations (e.g., Gross Amount, Due Dates).
+- Implement Validations for critical constraints (e.g., Credit Limit Checks, Inventory Availability).
+- Implement Early Numbering methods for dynamic ID assignments.
 
-The full implementation guide is split into phase-by-phase documents:
+### Phase 3: Action Implementation (The O2C Flow)
+- Build the `createDelivery` action to transition Sales Orders to Logistics.
+- Build the `postGoodsIssue` action to lock inventory and trigger Ship status.
+- Build the `createInvoice` action to generate AR records and calculate Payment Terms.
+- Build the `postPayment` action utilizing abstract entities for parameterized user input.
+- Code the `save_modified` saver class to handle safe, deferred database updates across isolated Business Objects.
 
-| Phase | Topic | Description |
-|-------|-------|-------------|
-| [Overview](https://github.com/shreeramkedlaya/o2corder/wiki) | 🗺️ Overview & Architecture | Document chain, RAP stack pattern & DB design |
-| [Phase 1](https://github.com/shreeramkedlaya/o2corder/wiki/Phase-1) | 🛠️ Master Data Foundation | Customer & Material master tables and value helps |
-| [Phase 2](https://github.com/shreeramkedlaya/o2corder/wiki/Phase-2) | 📦 Sales Order Core | Header & Item CRUD with draft, early numbering |
-| [Phase 3](https://github.com/shreeramkedlaya/o2corder/wiki/Phase-3) | 🚚 Logistics & Fulfilment | createDelivery, postGoodsIssue, stock deduction |
-| [Phase 4](https://github.com/shreeramkedlaya/o2corder/wiki/Phase-4) | 🧾 Billing & AR | createInvoice, AR status, due date, credit exposure |
-| [Phase 5](https://github.com/shreeramkedlaya/o2corder/wiki/Phase-5) | 💳 Payments & Reconciliation | postPayment, clearing invoices, order lifecycle close |
-| [Phase 6](https://github.com/shreeramkedlaya/o2corder/wiki/Phase-6) | 📊 UI & Dashboard Analytics | Fiori UI annotations, facets & reporting |
+### Phase 4: Frontend UI Configuration
+- Overlay CDS Projection views with `@UI` and `@EndUserText` annotations for field labels, facets, and data points.
+- Map custom Value Helps (e.g., Currency, Payment Methods) to input fields.
+- Configure dynamic feature controls in `get_instance_features` to disable actions based on state (e.g., grey out "Post Payment" when status is "Cleared").
+- Generate the Fiori Elements application via npm and bind to the V4 service.
 
-> See also: [Gap Analysis](o2c_gap_analysis.md) · [O2C Flowchart](o2c&#32;flowchart.mermaid) · [Full Wiki](../../wiki)
-
-## 🚀 Getting Started
-1. Clone the repository to your local machine.
-2. Run `npm install` to install Fiori tools and dependencies.
-3. Run `npm start` to serve the application connected to your SAP backend.
-   *(Alternatively, run `npm run start-mock` to test the UI using local mock data).*
+## Troubleshooting/Next Steps
+- **Troubleshooting**:
+  - *Missing UI Labels*: Verify that `@EndUserText.label` annotations exist in the topmost Projection View, not just the base table.
+  - *Dropdowns Yield "No Data"*: Ensure the underlying CDS view returns distinct data from a populated table, and remove `#XS` if OData UNION issues persist.
+  - *Stale Screen Data Post-Action*: Confirm Fiori Side Effects are explicitly defined in the BDEF to trigger automatic UI reloads.
+- **Next Steps**:
+  - Deploy the frontend module to the SAP BTP HTML5 Repository.
+  - Configure the Approuter and XSUAA service bindings for secure authentication and routing.
+  - Build specialized analytical Fiori apps (e.g., Overview Pages) on top of the transactional data.

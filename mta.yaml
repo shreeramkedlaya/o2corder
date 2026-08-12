@@ -1,0 +1,51 @@
+_schema-version: "3.2"
+ID: o2c-sales-order-app
+version: 1.0.0
+description: "O2C Sales Order Management Full-Stack App"
+
+modules:
+  - name: o2c-approuter
+    type: nodejs
+    path: approuter
+    parameters:
+      memory: 256M
+      disk-quota: 256M
+    requires:
+      - name: o2c-xsuaa
+      - name: o2c-destination
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install --production
+      requires:
+        - name: o2c-frontend
+          artifacts:
+            - dist/*
+          target-path: webapp/
+
+  - name: o2c-frontend
+    type: html5
+    path: frontend
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build
+      supported-platforms: []
+
+resources:
+  - name: o2c-xsuaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: o2c-app-${space}
+        tenant-mode: dedicated
+
+  - name: o2c-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite

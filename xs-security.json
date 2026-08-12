@@ -1,0 +1,7 @@
+{
+  "xsappname": "o2c-app",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of the O2C Application",
+  "scopes": [],
+  "role-templates": []
+}
