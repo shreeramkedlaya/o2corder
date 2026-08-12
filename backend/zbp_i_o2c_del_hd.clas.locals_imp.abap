@@ -135,7 +135,33 @@ CLASS lhc_DeliveryHeader IMPLEMENTATION.
 
 
   METHOD earlynumbering_cba_Deliveryite.
+    DATA: lv_max_item TYPE ztab_o2c_del_it-delivery_item.
+
+    LOOP AT entities INTO DATA(ls_header).
+      " 1. Read existing items to find the highest item number
+      READ ENTITIES OF zi_o2c_del_hd IN LOCAL MODE
+        ENTITY DeliveryHeader BY \_DeliveryItems
+          FIELDS ( delivery_item ) WITH VALUE #( ( %tky = ls_header-%tky ) )
+        RESULT DATA(lt_existing_items).
+
+      lv_max_item = 0.
+      LOOP AT lt_existing_items INTO DATA(ls_existing).
+        IF ls_existing-delivery_item > lv_max_item.
+          lv_max_item = ls_existing-delivery_item.
+        ENDIF.
+      ENDLOOP.
+
+      " 2. Assign new positions in increments of 10
+      LOOP AT ls_header-%target INTO DATA(ls_item).
+        lv_max_item += 10.
+        APPEND VALUE #( %cid          = ls_item-%cid
+                        %is_draft     = ls_item-%is_draft
+                        delivery_id   = ls_header-delivery_id
+                        delivery_item = lv_max_item ) TO mapped-deliveryitem.
+      ENDLOOP.
+    ENDLOOP.
   ENDMETHOD.
+
 
   METHOD createInvoice.
     READ ENTITIES OF zi_o2c_del_hd IN LOCAL MODE

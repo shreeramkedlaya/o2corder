@@ -28,10 +28,10 @@
 ]
 
 @UI.presentationVariant: [{
-  sortOrder: [{
-    by: 'order_id',
-    direction: #DESC
-   }]
+  sortOrder: [
+    { by: 'last_changed_at', direction: #ASC },
+    { by: 'order_id', direction: #DESC }
+    ]
  }]
 define root view entity ZC_O2C_HD
   provider contract transactional_query
@@ -159,11 +159,13 @@ define root view entity ZC_O2C_HD
       @UI.lineItem: [
         { position: 30, criticality: 'overall_status_criticality' },
         { type: #FOR_ACTION, dataAction: 'shipOrder', label: 'Ship Order', requiresContext: true },
-        { type: #FOR_ACTION, dataAction: 'cancelOrder', label: 'Cancel Order', requiresContext: true }
+        { type: #FOR_ACTION, dataAction: 'cancelOrder', label: 'Cancel Order', requiresContext: true },
+        { type: #FOR_ACTION, dataAction: 'createDelivery',  label: 'Create Delivery',  requiresContext: true }
       ]
       @UI.identification: [
         { type: #FOR_ACTION, dataAction: 'shipOrder', label: 'Ship Order', requiresContext: true },
-        { type: #FOR_ACTION, dataAction: 'cancelOrder', label: 'Cancel Order', requiresContext: true }
+        { type: #FOR_ACTION, dataAction: 'cancelOrder', label: 'Cancel Order', requiresContext: true },
+        { type: #FOR_ACTION, dataAction: 'createDelivery',  label: 'Create Delivery',  requiresContext: true }
       ]
       @UI.fieldGroup: [{ position: 30, qualifier: 'GQ1' }]
       @UI.dataPoint: { qualifier: 'StatusDP', title: 'Order Status' }

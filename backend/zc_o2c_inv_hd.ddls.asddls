@@ -23,6 +23,7 @@ define root view entity ZC_O2C_INV_HD
         }
       ]
 
+      @EndUserText.label: 'Invoice ID'
       @UI.lineItem: [
         { position: 10 },
         { type: #FOR_ACTION, dataAction: 'postPayment', label: 'Post Payment'}
@@ -33,39 +34,48 @@ define root view entity ZC_O2C_INV_HD
         ]
   key invoice_id,
 
+      @EndUserText.label: 'Sales Order ID'
       @UI.lineItem: [{ position: 20 }]
       @UI.identification: [{ position: 20 }]
       order_id,
 
+      @EndUserText.label: 'Delivery ID'
       @UI.lineItem: [{ position: 30 }]
       @UI.identification: [{ position: 30 }]
       delivery_id,
 
+      @EndUserText.label: 'Customer'
       @UI.lineItem: [{ position: 40 }]
       @UI.identification: [{ position: 40 }]
       customer_id,
 
+      @EndUserText.label: 'Invoice Date'
       @UI.lineItem: [{ position: 50 }]
       @UI.identification: [{ position: 50 }]
       invoice_date,
 
+      @EndUserText.label: 'Due Date'
       @UI.lineItem: [{ position: 60 }]
       @UI.identification: [{ position: 60 }]
       due_date,
 
+      @EndUserText.label: 'Gross Amount'
       @UI.lineItem: [{ position: 70 }]
       @UI.identification: [{ position: 70 }]
       gross_amount,
 
+      @EndUserText.label: 'Paid Amount'
       @UI.lineItem: [{ position: 80 }]
       @UI.identification: [{ position: 80 }]
       paid_amount,
 
+      @EndUserText.label: 'Outstanding Amount'
       @UI.lineItem: [{ position: 90 }]
       @UI.identification: [{ position: 90 }]
       @UI.dataPoint: { title: 'Outstanding Amount', criticality: 'ar_status_criticality' }
       outstanding_amount,
 
+      @EndUserText.label: 'Currency'
       currency_code,
 
       @UI.lineItem: [{ position: 100, criticality: 'ar_status_criticality', label: 'Status' }]
@@ -78,6 +88,7 @@ define root view entity ZC_O2C_INV_HD
       @UI.hidden: true
       ar_status_criticality,
 
+      @EndUserText.label: 'Payment Terms'
       @UI.identification: [{ position: 110 }]
       payment_terms,
 

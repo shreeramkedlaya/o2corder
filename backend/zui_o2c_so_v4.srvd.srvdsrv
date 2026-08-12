@@ -1,9 +1,11 @@
 @EndUserText.label: 'O2C Sales Order Service Definition'
 define service ZUI_O2C_SO_V4 {
-  expose ZC_O2C_IT     as OrderItem;
-  expose ZC_O2C_HD     as OrderHeader;
-  expose ZC_O2C_DEL_HD as DeliveryHeader;
-  expose ZC_O2C_DEL_IT as DeliveryItem;
-  expose ZC_O2C_INV_HD as InvoiceHeader;
-  expose ZC_O2C_PAY    as PaymentHistory;
+  expose ZC_O2C_IT          as OrderItem;
+  expose ZC_O2C_HD          as OrderHeader;
+  expose ZC_O2C_DEL_HD      as DeliveryHeader;
+  expose ZC_O2C_DEL_IT      as DeliveryItem;
+  expose ZC_O2C_INV_HD      as InvoiceHeader;
+  expose ZC_O2C_PAY         as PaymentHistory;
+  expose ZI_O2C_PAYMETH_VH  as PaymentMethodVH;
+  expose ZI_O2C_CURRENCY_VH as CurrencyVH;
 }

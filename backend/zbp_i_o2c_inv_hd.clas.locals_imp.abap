@@ -21,7 +21,20 @@ CLASS lhc_InvoiceHeader IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_instance_features.
+    READ ENTITIES OF zi_o2c_inv_hd IN LOCAL MODE
+      ENTITY InvoiceHeader
+        FIELDS ( ar_status ) WITH CORRESPONDING #( keys )
+      RESULT DATA(lt_invoices).
+
+    result = VALUE #( FOR ls_inv IN lt_invoices
+                      ( %tky = ls_inv-%tky
+                        " Disable Post Payment if Invoice is already Cleared (C)
+                        %action-postPayment = COND #( WHEN ls_inv-ar_status = 'C'
+                                                      THEN if_abap_behv=>fc-o-disabled
+                                                      ELSE if_abap_behv=>fc-o-enabled )
+                      ) ).
   ENDMETHOD.
+
 
   METHOD earlynumbering_create.
     DATA: lv_next_id TYPE n LENGTH 5.

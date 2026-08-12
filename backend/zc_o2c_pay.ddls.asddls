@@ -15,9 +15,13 @@ define root view entity ZC_O2C_PAY
 
           }
        ]
+
+      @EndUserText.label: 'Payment ID'
       @UI.lineItem: [{ position: 10 }]
       @UI.identification: [{ position: 10 }]
   key payment_id,
+
+      @EndUserText.label: 'Invoice ID'
       @UI.lineItem: [{ position: 20 }]
       @UI.identification: [{ position: 20 }]
       invoice_id,
@@ -28,20 +32,25 @@ define root view entity ZC_O2C_PAY
       @UI.hidden: true
       customer_id,
 
+      @EndUserText.label: 'Payment Date'
       @UI.lineItem: [{ position: 30 }]
       @UI.identification: [{ position: 30 }]
       payment_date,
 
+      @EndUserText.label: 'Payment Amount'
       @UI.lineItem: [{ position: 40 }]
       @UI.identification: [{ position: 40 }]
       payment_amount,
 
+      @EndUserText.label: 'Currency'
       currency_code,
 
+      @EndUserText.label: 'Payment Method'
       @UI.lineItem: [{position: 50}]
       @UI.identification: [{ position: 50 }]
       payment_method,
 
+      @EndUserText.label: 'Reference Number'
       @UI.lineItem: [{ position: 60 }]
       @UI.identification: [{ position: 60 }]
       reference,

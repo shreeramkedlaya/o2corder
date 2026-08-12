@@ -65,11 +65,20 @@ define root view entity ZC_O2C_DEL_HD
       @UI.fieldGroup: [{ position: 50, qualifier: 'GQ_DELIVERY' }]
       tracking_number,
 
-      @UI.lineItem: [{ position: 70, criticality: 'delivery_status_criticality' }]
+      @UI.lineItem: [
+      { position: 70, criticality: 'delivery_status_criticality' },
+      { type: #FOR_ACTION, dataAction: 'postGoodsIssue', label: 'Post Goods Issue', requiresContext: true },
+      { type: #FOR_ACTION, dataAction: 'createInvoice', label: 'Create Invoice', requiresContext: true }
+      ]
+      @UI.identification: [
+        { type: #FOR_ACTION, dataAction: 'postGoodsIssue', label: 'Post Goods Issue', requiresContext: true },
+        { type: #FOR_ACTION, dataAction: 'createInvoice', label: 'Create Invoice', requiresContext: true }
+      ]
       @UI.fieldGroup: [{ position: 60, qualifier: 'GQ_DELIVERY' }]
       @UI.dataPoint: { qualifier: 'DeliveryStatusDP', title: 'Status' }
       @ObjectModel.text.element: ['delivery_status_text']
       delivery_status,
+
 
       @UI.hidden: true
       delivery_status_text,

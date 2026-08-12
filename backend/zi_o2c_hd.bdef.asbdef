@@ -9,7 +9,9 @@ draft table zdr_o2c_hd
 lock master total etag last_changed_at
 authorization master ( global )
 {
-  create; update; delete;
+  create;
+  update ( features : instance );
+  delete ( features : instance );
   association _Items { create; with draft; }
 
   field ( readonly ) order_id, overall_status, overall_status_text, total_amount, created_by,
@@ -23,8 +25,8 @@ authorization master ( global )
   action ( features : instance ) releaseCredit result [1] $self;
   action ( features : instance ) createDelivery result [1] $self;
   determination setPaymentTerms on modify { create; field customer_id; }
-  determination checkCreditLimit on save { create; update; }
-
+  determination checkCreditLimit on save { create; field customer_id; field total_amount; }
+  determination setOpenStatus on save { create; }
   validation validateCustomer on save { field customer_id; create; update; }
   determination setInitialStatus on modify { create; }
 
@@ -59,7 +61,7 @@ authorization master ( global )
   }
 
   // --- DRAFT ACTIONS ---
-  draft action Edit;
+  draft action ( features : instance ) Edit;
   draft action Activate optimized;
   draft action Discard;
   draft action Resume;
