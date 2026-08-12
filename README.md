@@ -29,12 +29,12 @@ The full implementation guide is split into phase-by-phase documents:
 | Phase | Topic | Description |
 |-------|-------|-------------|
 | [Phase 0](https://github.com/shreeramkedlaya/o2corder/wiki) | 🗺️ Overview & Architecture | Document chain, RAP stack pattern & DB design |
-| [Phase 1](https://github.com/shreeramkedlaya/o2corder/wiki/Home#phase-1---master-data-foundation) | 🛠️ Master Data Foundation | Customer & Material master tables and value helps |
-| [Phase 2](https://github.com/shreeramkedlaya/o2corder/wiki/Home#phase-2---order-header-enhancements-stages-1--2) | 📦 Sales Order Core | Header & Item CRUD with draft, early numbering |
-| [Phase 3](https://github.com/shreeramkedlaya/o2corder/wiki/Home#phase-3---fulfilment--delivery-stages-3--4) | ⚙️ Logistics & Fulfilment | createDelivery, postGoodsIssue, stock deduction |
-| [Phase 4](https://github.com/shreeramkedlaya/o2corder/wiki/Home#phase-4---billing--accounts-receivable-stages-5--6) | 🧾 Billing & AR | createInvoice, AR status, due date, credit exposure |
-| [Phase 5](https://github.com/shreeramkedlaya/o2corder/wiki/Home#phase-5---payment--reconciliation-stage-7) | 💳 Payments & Reconciliation | postPayment, clearing invoices, order lifecycle close |
-| [Phase 6](https://github.com/shreeramkedlaya/o2corder/wiki/Home#phase-6---ui--dashboard-analytics) | 📊 UI & Dashboard Analytics | Fiori UI annotations, facets & reporting |
+| [Phase 1](https://github.com/shreeramkedlaya/o2corder/wiki#phase-1---master-data-foundation) | 🛠️ Master Data Foundation | Customer & Material master tables and value helps |
+| [Phase 2](https://github.com/shreeramkedlaya/o2corder/wiki#phase-2---order-header-enhancements-stages-1--2) | 📦 Sales Order Core | Header & Item CRUD with draft, early numbering |
+| [Phase 3](https://github.com/shreeramkedlaya/o2corder/wiki#phase-3---fulfilment--delivery-stages-3--4) | ⚙️ Logistics & Fulfilment | createDelivery, postGoodsIssue, stock deduction |
+| [Phase 4](https://github.com/shreeramkedlaya/o2corder/wiki#phase-4---billing--accounts-receivable-stages-5--6) | 🧾 Billing & AR | createInvoice, AR status, due date, credit exposure |
+| [Phase 5](https://github.com/shreeramkedlaya/o2corder/wiki#phase-5---payment--reconciliation-stage-7) | 💳 Payments & Reconciliation | postPayment, clearing invoices, order lifecycle close |
+| [Phase 6](https://github.com/shreeramkedlaya/o2corder/wiki#phase-6---ui--dashboard-analytics) | 📊 UI & Dashboard Analytics | Fiori UI annotations, facets & reporting |
 
 > See also: [Gap Analysis](o2c_gap_analysis.md) · [O2C Flowchart](o2c&#32;flowchart.mermaid) · [Full Wiki](../../wiki)
 
