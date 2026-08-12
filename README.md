@@ -5,7 +5,7 @@
 ![OData V4](https://img.shields.io/badge/OData-V4-orange?style=flat)
 ![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=flat)
 ![Phases](https://img.shields.io/badge/Phases-7%20%2F%207-blueviolet?style=flat)
-![License](https://img.shields.io/badge/License-MIT-lightgrey?style=flat)
+<!-- ![License](https://img.shields.io/badge/License-MIT-lightgrey?style=flat) -->
 
 A modern SAP Fiori Elements application for Order-to-Cash (O2C) Sales Order Management, built using OData V4 and the ABAP RESTful Application Programming (RAP) model.
 
@@ -28,13 +28,13 @@ The full implementation guide is split into phase-by-phase documents:
 
 | Phase | Topic | Description |
 |-------|-------|-------------|
-| [Phase 0](implementation/Phase_0_Overview.md) | 🗺️ Overview & Architecture | Document chain, RAP stack pattern & DB design |
-| [Phase 1](implementation/Phase_1.md) | 🛠️ Master Data Foundation | Customer & Material master tables and value helps |
-| [Phase 2](implementation/Phase_2.md) | 📦 Sales Order Core | Header & Item CRUD with draft, early numbering |
-| [Phase 3](implementation/Phase_3.md) | ⚙️ Business Logic | Determinations, validations, credit check & actions |
-| [Phase 4](implementation/Phase_4.md) | 🚚 Logistics & Delivery | createDelivery, postGoodsIssue, stock deduction |
-| [Phase 5](implementation/Phase_5.md) | 🧾 Invoicing & AR | createInvoice, AR status, due date, credit exposure |
-| [Phase 6](implementation/Phase_6.md) | 💳 Payments & Reconciliation | postPayment, clearing invoices, order lifecycle close |
+| [Phase 0](https://github.com/shreeramkedlaya/o2corder/wiki) | 🗺️ Overview & Architecture | Document chain, RAP stack pattern & DB design |
+| [Phase 1](https://github.com/shreeramkedlaya/o2corder/wiki/Home#phase-1---master-data-foundation) | 🛠️ Master Data Foundation | Customer & Material master tables and value helps |
+| [Phase 2](https://github.com/shreeramkedlaya/o2corder/wiki/Home#phase-2---order-header-enhancements-stages-1--2) | 📦 Sales Order Core | Header & Item CRUD with draft, early numbering |
+| [Phase 3](https://github.com/shreeramkedlaya/o2corder/wiki/Home#phase-3---fulfilment--delivery-stages-3--4) | ⚙️ Logistics & Fulfilment | createDelivery, postGoodsIssue, stock deduction |
+| [Phase 4](https://github.com/shreeramkedlaya/o2corder/wiki/Home#phase-4---billing--accounts-receivable-stages-5--6) | 🧾 Billing & AR | createInvoice, AR status, due date, credit exposure |
+| [Phase 5](https://github.com/shreeramkedlaya/o2corder/wiki/Home#phase-5---payment--reconciliation-stage-7) | 💳 Payments & Reconciliation | postPayment, clearing invoices, order lifecycle close |
+| [Phase 6](https://github.com/shreeramkedlaya/o2corder/wiki/Home#phase-6---ui--dashboard-analytics) | 📊 UI & Dashboard Analytics | Fiori UI annotations, facets & reporting |
 
 > See also: [Gap Analysis](o2c_gap_analysis.md) · [O2C Flowchart](o2c&#32;flowchart.mermaid) · [Full Wiki](../../wiki)
 
