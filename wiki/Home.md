@@ -1,4 +1,4 @@
-# Order-to-Cash (O2C) Implementation Plan
+﻿# Order-to-Cash (O2C) Implementation Plan
 
 This massive implementation plan has been split into manageable, phase-by-phase documents for easier reading and maintenance. 
 
@@ -14,3 +14,4 @@ Please find the detailed implementation steps below:
 
 ---
 *Note: This architecture utilizes the ABAP RESTful Application Programming Model (RAP) with Strict Mode cross-BO updates handled safely via Saver Classes.*
+

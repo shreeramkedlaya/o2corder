@@ -207,4 +207,5 @@ In `ZC_O2C_INV_HD`, add facet:
 
 ---
 **Navigation**
-⬅️ Previous: [[Phase_4]] | ⬆️ Back to [[O2C_IMPLEMENTATION_PLAN|Main Plan]] | Next: [[Phase_6]] ➡️
+⬅️ Previous: [[Phase_4]] | ⬆️ Back to [[Home|Main Plan]] | Next: [[Phase_6]] ➡️
+

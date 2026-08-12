@@ -264,4 +264,5 @@ ENDMETHOD.
 
 ---
 **Navigation**
-⬅️ Previous: [[Phase_1]] | ⬆️ Back to [[O2C_IMPLEMENTATION_PLAN|Main Plan]] | Next: [[Phase_3]] ➡️
+⬅️ Previous: [[Phase_1]] | ⬆️ Back to [[Home|Main Plan]] | Next: [[Phase_3]] ➡️
+

@@ -39,4 +39,5 @@ Each document entity follows the same RAP stack pattern:
 
 ---
 **Navigation**
-⬆️ Back to [[O2C_IMPLEMENTATION_PLAN|Main Plan]] | Next: [[Phase_1]] ➡️
+⬆️ Back to [[Home|Main Plan]] | Next: [[Phase_1]] ➡️
+

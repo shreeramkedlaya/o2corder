@@ -307,4 +307,5 @@ Phase 6: Dashboard & UI Polish (build on all)
 
 ---
 **Navigation**
-⬅️ Previous: [[Phase_5]] | ⬆️ Back to [[O2C_IMPLEMENTATION_PLAN|Main Plan]]
+⬅️ Previous: [[Phase_5]] | ⬆️ Back to [[Home|Main Plan]]
+

@@ -192,4 +192,5 @@ currency_code = ls_mat-currency.
 
 ---
 **Navigation**
-⬅️ Previous: [[Phase_0_Overview]] | ⬆️ Back to [[O2C_IMPLEMENTATION_PLAN|Main Plan]] | Next: [[Phase_2]] ➡️
+⬅️ Previous: [[Phase_0_Overview]] | ⬆️ Back to [[Home|Main Plan]] | Next: [[Phase_2]] ➡️
+

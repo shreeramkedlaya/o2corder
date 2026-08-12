@@ -295,4 +295,5 @@ Also add `createDelivery` action to the `ZC_O2C_HD` BDEF using `use action creat
 
 ---
 **Navigation**
-⬅️ Previous: [[Phase_2]] | ⬆️ Back to [[O2C_IMPLEMENTATION_PLAN|Main Plan]] | Next: [[Phase_4]] ➡️
+⬅️ Previous: [[Phase_2]] | ⬆️ Back to [[Home|Main Plan]] | Next: [[Phase_4]] ➡️
+
