@@ -15,6 +15,22 @@ A modern SAP Fiori Elements application for Order-to-Cash (O2C) Sales Order Mana
 - **Backend:** ABAP RAP (RESTful Application Programming Model)
 - **Database:** SAP HANA / ABAP Environment
 
+## 📖 Implementation Documentation
+
+The full implementation guide is split into phase-by-phase documents:
+
+| Phase | Topic | Description |
+|-------|-------|-------------|
+| [Phase 0](implementation/Phase_0_Overview.md) | 🗺️ Overview & Architecture | Document chain, RAP stack pattern & DB design |
+| [Phase 1](implementation/Phase_1.md) | 🛠️ Master Data Foundation | Customer & Material master tables and value helps |
+| [Phase 2](implementation/Phase_2.md) | 📦 Sales Order Core | Header & Item CRUD with draft, early numbering |
+| [Phase 3](implementation/Phase_3.md) | ⚙️ Business Logic | Determinations, validations, credit check & actions |
+| [Phase 4](implementation/Phase_4.md) | 🚚 Logistics & Delivery | createDelivery, postGoodsIssue, stock deduction |
+| [Phase 5](implementation/Phase_5.md) | 🧾 Invoicing & AR | createInvoice, AR status, due date, credit exposure |
+| [Phase 6](implementation/Phase_6.md) | 💳 Payments & Reconciliation | postPayment, clearing invoices, order lifecycle close |
+
+> See also: [Gap Analysis](o2c_gap_analysis.md) · [O2C Flowchart](o2c&#32;flowchart.mermaid) · [Full Wiki](../../wiki)
+
 ## 🚀 Getting Started
 1. Clone the repository to your local machine.
 2. Run `npm install` to install Fiori tools and dependencies.
