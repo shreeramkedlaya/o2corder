@@ -112,7 +112,8 @@ Use this checklist to track your development progress in your new ABAP package:
 ### Phase 3: RAP Behavior (BDEF & Implementation Class)
 - [x] Define `ZI_LFT_HD` behavior (Used unmanaged/non-draft with EML mock data).
 - [x] Implement `generateMilestones` determination (10/30/40/20 logic).
-- [x] Implement `generateInvoice` action on the BPLAN entity (with custom authorization bypass).
+- [x] Implement `generateInvoice` action on the BPLAN entity (with custom authorization bypass & dynamic numbering).
+- [ ] Implement `save_modified` in Behavior Saver class to insert records into `ZTAB_LFT_INV` table.
 - [ ] Implement `calculateTaxes` determination in ABAP class. (Skipped for Prototype)
 - [ ] Create abstract entity `ZABS_LFT_PHASE_INPUT`. (Skipped for Prototype)
 - [ ] Implement `createPhaseDelivery` action logic. (Skipped for Prototype)
@@ -126,3 +127,5 @@ Use this checklist to track your development progress in your new ABAP package:
 - [x] Create Service Definition `ZUI_LFT_SO_V4`.
 - [x] Create Service Binding (OData V4) and publish.
 - [x] Update `frontend_v2/webapp/manifest.json` locally to point to this new service URI!
+- [x] Configure `.abapgit.xml` starting folder to `/backend_v2/` for isolated branch syncing.
+- [ ] Build and deploy `frontend_v2` via MTA to SAP BTP Cloud Foundry.
