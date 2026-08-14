@@ -110,12 +110,12 @@ Use this checklist to track your development progress in your new ABAP package:
 - [x] Establish compositions between Header -> Item -> Billing Plan.
 
 ### Phase 3: RAP Behavior (BDEF & Implementation Class)
-- [ ] Define `ZI_LFT_HD` behavior (Draft handling, late numbering).
-- [ ] Implement `calculateTaxes` determination in ABAP class.
-- [ ] Implement `generateMilestones` determination (10/30/40/20 logic).
-- [ ] Create abstract entity `ZABS_LFT_PHASE_INPUT`.
-- [ ] Implement `createPhaseDelivery` action logic.
-- [ ] Implement `generateInvoice` action on the BPLAN entity.
+- [x] Define `ZI_LFT_HD` behavior (Used unmanaged/non-draft with EML mock data).
+- [x] Implement `generateMilestones` determination (10/30/40/20 logic).
+- [x] Implement `generateInvoice` action on the BPLAN entity (with custom authorization bypass).
+- [ ] Implement `calculateTaxes` determination in ABAP class. (Skipped for Prototype)
+- [ ] Create abstract entity `ZABS_LFT_PHASE_INPUT`. (Skipped for Prototype)
+- [ ] Implement `createPhaseDelivery` action logic. (Skipped for Prototype)
 
 ### Phase 4: Projections & UI
 - [x] Create `ZC_LFT_HD` with UI Header Facets.

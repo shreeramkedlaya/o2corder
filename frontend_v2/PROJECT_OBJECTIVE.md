@@ -22,3 +22,22 @@ The Behavior Definition (`.bdef`) and its ABAP Implementation Class hold the tra
 
 ### 4. The Connection (Phase 5)
 The entire package is exposed via a Service Definition and OData V4 Service Binding (`ZUI_LFT_SO_V4`), which the `frontend_v2` UI5 application consumes.
+
+## How to Test the End-to-End Process
+
+Follow these steps to verify the complete Greenfield V2 architecture:
+
+1. **Launch the Fiori Application:** 
+   Start the `frontend_v2` app locally (by running `npm start` in the terminal) or via your SAP BTP Launchpad.
+
+2. **Simulate a Sales Order Creation:** 
+   Because we disabled the standard UI 'Create' buttons to rely on backend EML logic for this prototype, you need to simulate a creation event. Open the `ZCL_LFT_MOCK_DATA` ABAP class in your IDE and execute it (Press F9). This will use Entity Manipulation Language (EML) to securely create an Order Header and a Lift Item in the backend tables.
+
+3. **Verify the Automated Billing Plan:** 
+   Refresh your Fiori app. You should see the newly generated Order. Click into the Order Header, then drill down into the Lift Item. Scroll to the `Billing Plan` section. You should see it perfectly populated with exactly 4 Milestones (10% Advance, 30% Delivery, 40% Installation, 20% Testing) generated automatically by the backend Determination logic.
+
+4. **Execute the Action:** 
+   Select one of the Milestone rows (e.g., the 10% Advance) and click the **Raise Invoice** button at the top of the table.
+
+5. **Verify the State Change:** 
+   The backend action will execute and immediately report back to the UI. The Fiori table will automatically refresh to show the row's Status changed to **I** (Invoiced) and the Invoice ID automatically populated with **INV9001**.
