@@ -22,10 +22,24 @@ modules:
           artifacts:
             - dist/*
           target-path: webapp/
+        - name: o2c-frontend-v2
+          artifacts:
+            - dist/*
+          target-path: webapp/
 
   - name: o2c-frontend
     type: html5
     path: frontend
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build
+      supported-platforms: []
+
+  - name: o2c-frontend-v2
+    type: html5
+    path: frontend_v2
     build-parameters:
       builder: custom
       commands:
