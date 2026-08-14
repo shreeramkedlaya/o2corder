@@ -1,0 +1,78 @@
+managed implementation in class zbp_i_lft_hd unique;
+strict ( 2 );
+
+define behavior for ZI_LFT_HD alias OrderHeader
+persistent table ztab_lft_hd
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+   mapping for ztab_lft_hd
+  {
+    OrderId = order_id;
+    CustomerId = customer_id;
+    GrossTotal = gross_total;
+    TaxTotal = tax_total;
+    Currency = currency;
+    Status = status;
+  }
+  association _Item { create; }
+}
+
+define behavior for zi_lft_it alias OrderItem
+persistent table ztab_lft_it
+lock dependent by _Header
+authorization dependent by _Header
+{
+  update;
+  delete;
+  field ( readonly ) OrderId;
+    mapping for ztab_lft_it
+  {
+    OrderId = order_id;
+    ItemPos = item_pos;
+    MaterialId = material_id;
+    Quantity = quantity;
+    Uom = uom;
+    ItemAmount = item_amount;
+    TaxRate = tax_rate;
+    TaxAmount = tax_amount;
+    Currency = currency;
+  }
+  association _Header;
+  association _BillingPlan { create; }
+
+  // automation 1: generate 4 milestones when item is added
+  determination generateMilestones on save { create; }
+}
+
+define behavior for ZI_LFT_BPLAN alias BillingPlan
+persistent table ztab_lft_bplan
+lock dependent by _Header
+authorization dependent by _Header
+{
+  update;
+  delete;
+  field ( readonly ) OrderId, ItemPos, MilestoneId;
+   mapping for ztab_lft_bplan
+  {
+    OrderId = order_id;
+    ItemPos = item_pos;
+    MilestoneId = milestone_id;
+    MilestoneType = milestone_type;
+    PhaseId = phase_id;
+    Percentage = percentage;
+    Amount = amount;
+    Currency = currency;
+    Status = status;
+    InvoiceId = invoice_id;
+    DueDate = due_date;
+  }
+  association _Item;
+  association _Header;
+
+  // automation 2: user clicks raise invoice on a milestone row
+  action (authorization : none) generateInvoice result [1] $self;
+}

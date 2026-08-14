@@ -1,0 +1,32 @@
+projection;
+strict ( 2 );
+
+define behavior for ZC_LFT_HD alias OrderHeader
+{
+  use create;
+  use update;
+  use delete;
+
+  use association _Item { create; }
+}
+
+define behavior for ZC_LFT_IT alias OrderItem
+{
+  use update;
+  use delete;
+
+  use association _Header;
+  use association _BillingPlan { create; }
+}
+
+define behavior for ZC_LFT_BPLAN alias BillingPlan
+{
+  use update;
+  use delete;
+
+  use association _Item;
+  use association _Header;
+
+  // Expose our custom button to the UI!
+  use action generateInvoice;
+}
