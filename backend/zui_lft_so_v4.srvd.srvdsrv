@@ -1,0 +1,6 @@
+@EndUserText.label: 'Service Definition for Project Orders'
+define service Zui_lft_so_v4 {
+  expose ZC_LFT_HD    as OrderHeader;
+  expose ZC_LFT_IT    as OrderItem;
+  expose ZC_LFT_BPLAN as BillingPlan;
+}
