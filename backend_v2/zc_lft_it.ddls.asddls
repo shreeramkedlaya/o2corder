@@ -33,28 +33,39 @@ define view entity ZC_LFT_IT
       ]
 
       @UI.lineItem: [{ position: 10 }]
+      @EndUserText.label: 'Order ID'
   key OrderId,
 
       @UI.lineItem: [{ position: 20 }]
       @UI.identification: [{ position: 10 }]
+      @EndUserText.label: 'Item Position'
   key ItemPos,
 
       @UI.lineItem: [{ position: 30 }]
       @UI.identification: [{ position: 20 }]
+      @EndUserText.label: 'Material ID'
       MaterialId,
 
       @UI.lineItem: [{ position: 40 }]
       @UI.identification: [{ position: 30 }]
+      @EndUserText.label: 'Quantity'
       Quantity,
+
+      @EndUserText.label: 'Unit of Measure'
       Uom,
 
       @UI.lineItem: [{ position: 50 }]
       @UI.identification: [{ position: 40 }]
+      @EndUserText.label: 'Item Amount'
       ItemAmount,
 
-
+      @EndUserText.label: 'Tax Rate'
       TaxRate,
+
+      @EndUserText.label: 'Tax Amount'
       TaxAmount,
+
+      @EndUserText.label: 'Currency'
       Currency,
 
       /* Associations */

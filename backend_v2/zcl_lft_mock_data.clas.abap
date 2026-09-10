@@ -10,7 +10,10 @@ CLASS zcl_lft_mock_data DEFINITION
 ENDCLASS.
 
 
-CLASS zcl_lft_mock_data IMPLEMENTATION.
+
+CLASS ZCL_LFT_MOCK_DATA IMPLEMENTATION.
+
+
   METHOD if_oo_adt_classrun~main.
 
     " Use EML to create an Item for our existing Order!
@@ -37,4 +40,3 @@ CLASS zcl_lft_mock_data IMPLEMENTATION.
     out->write( 'Item created via RAP! Check your Fiori App!' ).
   ENDMETHOD.
 ENDCLASS.
-

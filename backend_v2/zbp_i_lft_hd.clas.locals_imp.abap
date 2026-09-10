@@ -121,7 +121,23 @@ ENDCLASS.
 
 CLASS lhc_BillingPlan IMPLEMENTATION.
   METHOD generateInvoice.
-    " 1. Read selected milestone row
+    DATA: lv_next_id TYPE n LENGTH 5.
+
+    " 1. Query the database to find the highest existing Invoice ID
+    SELECT MAX( invoice_id ) FROM ztab_lft_bplan INTO @DATA(lv_max_id).
+
+    IF lv_max_id IS NOT INITIAL AND strlen( lv_max_id ) >= 4.
+      TRY.
+          " Strip out the 'INV-' prefix to get the numeric part
+          lv_next_id = substring( val = lv_max_id off = 4 ).
+        CATCH cx_root.
+          lv_next_id = 0.
+      ENDTRY.
+    ELSE.
+      lv_next_id = 0.
+    ENDIF.
+
+    " 2. Read selected milestone row
     READ ENTITIES OF zi_lft_hd IN LOCAL MODE
          ENTITY BillingPlan
          ALL FIELDS WITH CORRESPONDING #( keys )
@@ -130,22 +146,23 @@ CLASS lhc_BillingPlan IMPLEMENTATION.
     DATA: lt_update TYPE TABLE FOR UPDATE zi_lft_hd\\BillingPlan.
 
     LOOP AT lt_milestones INTO DATA(ls_milestone).
-      " 2. Change status to 'Invoiced' and simulate an Invoice ID
+      " 3. Increment ID and change status to 'Invoiced'
+      lv_next_id += 1.
       APPEND VALUE #( %tky = ls_milestone-%tky
                       Status = 'I'
-                      InvoiceId = 'INV9001'
+                      InvoiceId = |INV-{ lv_next_id }|
                       %control = VALUE #( Status = if_abap_behv=>mk-on InvoiceId = if_abap_behv=>mk-on )
                     ) TO lt_update.
     ENDLOOP.
 
-    " 3. Update the rows in the database
+    " 4. Update the rows in the database
     IF lt_update IS NOT INITIAL.
       MODIFY ENTITIES OF zi_lft_hd IN LOCAL MODE
              ENTITY BillingPlan
              UPDATE FROM lt_update.
     ENDIF.
 
-    " 4. Return the refreshed data back to the UI so it instantly updates on screen
+    " 5. Return the refreshed data back to the UI so it instantly updates on screen
     READ ENTITIES OF zi_lft_hd IN LOCAL MODE
          ENTITY BillingPlan
          ALL FIELDS WITH CORRESPONDING #( keys )
