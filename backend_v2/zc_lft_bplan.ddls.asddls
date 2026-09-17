@@ -65,7 +65,6 @@ define view entity ZC_LFT_BPLAN
 
       @UI.lineItem: [{ position: 80 }]
       @UI.identification: [{ position: 80 }]
-      @EndUserText.label: 'Due Date'
       DueDate,
 
 

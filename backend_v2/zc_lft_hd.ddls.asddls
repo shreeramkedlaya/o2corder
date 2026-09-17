@@ -11,27 +11,22 @@ define root view entity ZC_LFT_HD
 
       @UI.lineItem: [{ position: 10 }]
       @UI.identification: [{ position: 10 }]
-      @EndUserText.label: 'Order ID'
   key OrderId,
 
       @UI.lineItem: [{ position: 20 }]
       @UI.identification: [{ position: 20 }]
-      @EndUserText.label: 'Customer ID'
       CustomerId,
 
       @UI.lineItem: [{ position: 30 }]
       @UI.identification: [{ position: 30 }]
-      @EndUserText.label: 'Gross Total'
       GrossTotal,
 
       @UI.identification: [{ position: 40 }]
-      @EndUserText.label: 'Tax Total'
       TaxTotal,
       Currency,
 
       @UI.lineItem: [{ position: 40 }]
       @UI.identification: [{ position: 50 }]
-      @EndUserText.label: 'Status'
       Status,
 
       /* Associations */
